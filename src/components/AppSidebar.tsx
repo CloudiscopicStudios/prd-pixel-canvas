@@ -7,7 +7,8 @@ import {
   TrendingDown,
   BarChart3,
   Settings,
-  Plane
+  Plane,
+  LucideIcon
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -34,7 +35,6 @@ const navigationItems = [
   { title: "Suppliers", url: "/suppliers", icon: Users },
   { title: "Waste Tracking", url: "/waste", icon: TrendingDown },
   { title: "Reports", url: "/reports", icon: BarChart3 },
-  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
@@ -56,25 +56,24 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border p-4">
+      <SidebarHeader className="border-b border-sidebar-border p-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary">
-            <Plane className="h-6 w-6 text-white" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
+            <Plane className="h-5 w-5 text-white" />
           </div>
           {!isCollapsed && (
             <div>
-              <h1 className="text-lg font-bold text-sidebar-foreground">PantryPilot</h1>
-              <p className="text-xs text-sidebar-foreground/70">AI Co-Pilot</p>
+              <h1 className="text-xl font-bold text-foreground">PantryPilot</h1>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-3 py-6">
         <SidebarGroup>
-          <SidebarGroupLabel>Main Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase mb-2">Overview</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -83,8 +82,8 @@ export function AppSidebar() {
                       end={item.url === "/"} 
                       className={getNavCls(isActive(item.url))}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5" />
+                      {!isCollapsed && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -95,16 +94,27 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs">
+        {!isCollapsed && <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase mb-3">Settings</SidebarGroupLabel>}
+        <SidebarMenu className="space-y-1 mb-4">
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <NavLink to="/settings" className={getNavCls(isActive("/settings"))}>
+                <Settings className="h-5 w-5" />
+                {!isCollapsed && <span className="font-medium">Setting</span>}
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <div className="flex items-center gap-3 pt-3 border-t">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-primary text-white text-sm font-semibold">
               {mockUser.avatar}
             </AvatarFallback>
           </Avatar>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">{mockUser.name}</p>
-              <p className="text-xs text-sidebar-foreground/70 truncate">{mockUser.role}</p>
+              <p className="text-sm font-semibold text-foreground truncate">{mockUser.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{mockUser.role}</p>
             </div>
           )}
         </div>
