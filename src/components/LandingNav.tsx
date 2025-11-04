@@ -31,13 +31,13 @@ export const LandingNav = () => {
           <div className="flex items-center gap-3">
             <Button 
               variant="ghost" 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/signin')}
               className="rounded-full"
             >
               Sign in
             </Button>
             <Button 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/signup/restaurant')}
               className="rounded-full bg-foreground text-background hover:bg-foreground/90"
             >
               Get started

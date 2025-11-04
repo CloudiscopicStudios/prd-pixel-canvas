@@ -15,6 +15,9 @@ import Suppliers from "./pages/Suppliers";
 import Waste from "./pages/Waste";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
+import SignIn from "./pages/SignIn";
+import SignUpRestaurant from "./pages/SignUpRestaurant";
+import SignUpSupplier from "./pages/SignUpSupplier";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +43,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup/restaurant" element={<SignUpRestaurant />} />
+          <Route path="/signup/supplier" element={<SignUpSupplier />} />
           <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
           <Route path="/orders" element={<AppLayout><Orders /></AppLayout>} />
           <Route path="/orders/:id" element={<AppLayout><OrderDetail /></AppLayout>} />
