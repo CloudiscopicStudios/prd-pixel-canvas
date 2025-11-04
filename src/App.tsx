@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
+import SupplierDashboard from "./pages/SupplierDashboard";
 import Orders from "./pages/Orders";
 import OrderDetail from "./pages/OrderDetail";
 import Inventory from "./pages/Inventory";
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/signup/restaurant" element={<SignUpRestaurant />} />
           <Route path="/signup/supplier" element={<SignUpSupplier />} />
           <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
+          <Route path="/supplier-dashboard" element={<AppLayout><SupplierDashboard /></AppLayout>} />
           <Route path="/orders" element={<AppLayout><Orders /></AppLayout>} />
           <Route path="/orders/:id" element={<AppLayout><OrderDetail /></AppLayout>} />
           <Route path="/inventory" element={<AppLayout><Inventory /></AppLayout>} />

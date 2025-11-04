@@ -17,15 +17,36 @@ export default function SignIn() {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate sign in - will need backend integration
+    // Hardcoded admin credentials - TEMPORARY until backend is set up
+    const restaurantAdmin = { email: "jaryd.dev@gmail.com", password: "PantryPilot@01", type: "restaurant" };
+    const supplierAdmin = { email: "jaryd.dev1@gmail.com", password: "PantryPilot@01", type: "supplier" };
+
     setTimeout(() => {
-      toast({
-        title: "Backend Required",
-        description: "Authentication needs to be set up with a backend service.",
-      });
+      if (email === restaurantAdmin.email && password === restaurantAdmin.password) {
+        localStorage.setItem("userType", "restaurant");
+        localStorage.setItem("userEmail", email);
+        toast({
+          title: "Welcome back!",
+          description: "Signed in as Restaurant Admin",
+        });
+        navigate("/dashboard");
+      } else if (email === supplierAdmin.email && password === supplierAdmin.password) {
+        localStorage.setItem("userType", "supplier");
+        localStorage.setItem("userEmail", email);
+        toast({
+          title: "Welcome back!",
+          description: "Signed in as Supplier Admin",
+        });
+        navigate("/supplier-dashboard");
+      } else {
+        toast({
+          title: "Invalid credentials",
+          description: "Please check your email and password",
+          variant: "destructive",
+        });
+      }
       setLoading(false);
-      // navigate("/dashboard");
-    }, 1000);
+    }, 800);
   };
 
   return (
