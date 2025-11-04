@@ -3,8 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import OrderDetail from "./pages/OrderDetail";
@@ -38,7 +39,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AppLayout><Dashboard /></AppLayout>} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
           <Route path="/orders" element={<AppLayout><Orders /></AppLayout>} />
           <Route path="/orders/:id" element={<AppLayout><OrderDetail /></AppLayout>} />
           <Route path="/inventory" element={<AppLayout><Inventory /></AppLayout>} />
