@@ -3,10 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-  DollarSign, 
-  TrendingDown, 
-  Package, 
+import {
+  DollarSign,
+  TrendingDown,
+  Package,
   ShoppingCart,
   Search,
   Mail,
@@ -21,9 +21,67 @@ import { mockMetrics, mockPendingOrders, mockUser } from "@/lib/mock-data";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loadingMail, setLoadingMail] = useState(false);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [loadingViewDashboard, setLoadingViewDashboard] = useState(false);
+  const [loadingAddTeamMember, setLoadingAddTeamMember] = useState(false);
+  const [followingMentor, setFollowingMentor] = useState<string | null>(null);
+
+  const handleOpenMail = async () => {
+    setLoadingMail(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setLoadingMail(false);
+    toast({
+      title: "Mail",
+      description: "No new messages",
+    });
+  };
+
+  const handleOpenNotifications = async () => {
+    setLoadingNotifications(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setLoadingNotifications(false);
+    toast({
+      title: "Notifications",
+      description: "You have 3 new notifications",
+    });
+  };
+
+  const handleViewDashboard = async () => {
+    setLoadingViewDashboard(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toast({
+      title: "Dashboard",
+      description: "Loading full dashboard view...",
+    });
+    navigate('/reports');
+  };
+
+  const handleAddTeamMember = async () => {
+    setLoadingAddTeamMember(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setLoadingAddTeamMember(false);
+    toast({
+      title: "Invite Sent",
+      description: "Team member invitation has been sent",
+    });
+  };
+
+  const handleFollowMentor = async (mentorName: string) => {
+    setFollowingMentor(mentorName);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setFollowingMentor(null);
+    toast({
+      title: "Following",
+      description: `You are now following ${mentorName}`,
+    });
+  };
 
   const chartData = [
     { date: "1-10 Aug", value: 40 },
@@ -52,10 +110,22 @@ const Dashboard = () => {
             />
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="icon" className="h-11 w-11 rounded-xl">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-11 w-11 rounded-xl"
+              onClick={handleOpenMail}
+              disabled={loadingMail}
+            >
               <Mail className="h-5 w-5" />
             </Button>
-            <Button variant="outline" size="icon" className="h-11 w-11 rounded-xl">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-11 w-11 rounded-xl"
+              onClick={handleOpenNotifications}
+              disabled={loadingNotifications}
+            >
               <Bell className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3 pl-3 border-l">
@@ -87,9 +157,13 @@ const Dashboard = () => {
               <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
                 Optimize Your Restaurant Inventory<br/>with AI-Powered Insights
               </h1>
-              <Button className="mt-6 bg-black hover:bg-black/90 text-white rounded-full h-11 px-6">
-                View Dashboard
-                <ChevronRight className="ml-2 h-4 w-4" />
+              <Button
+                className="mt-6 bg-black hover:bg-black/90 text-white rounded-full h-11 px-6"
+                onClick={handleViewDashboard}
+                disabled={loadingViewDashboard}
+              >
+                {loadingViewDashboard ? "Loading..." : "View Dashboard"}
+                {!loadingViewDashboard && <ChevronRight className="ml-2 h-4 w-4" />}
               </Button>
             </div>
           </div>
@@ -300,7 +374,13 @@ const Dashboard = () => {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Your Team</CardTitle>
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                onClick={handleAddTeamMember}
+                disabled={loadingAddTeamMember}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -320,14 +400,24 @@ const Dashboard = () => {
                       <p className="text-xs text-muted-foreground">{mentor.role}</p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary hover:text-primary"
+                    onClick={() => handleFollowMentor(mentor.name)}
+                    disabled={followingMentor === mentor.name}
+                  >
                     <UserPlus className="h-4 w-4 mr-1" />
-                    Follow
+                    {followingMentor === mentor.name ? "..." : "Follow"}
                   </Button>
                 </div>
               ))}
             </div>
-            <Button variant="link" className="w-full mt-4 text-primary">
+            <Button
+              variant="link"
+              className="w-full mt-4 text-primary"
+              onClick={() => navigate('/settings')}
+            >
               See All
             </Button>
           </CardContent>

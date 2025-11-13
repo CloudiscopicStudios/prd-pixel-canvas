@@ -1,8 +1,22 @@
 import { Package, TrendingUp, Users, DollarSign, Clock, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SupplierDashboard() {
+  const { toast } = useToast();
+  const [loadingAction, setLoadingAction] = useState<string | null>(null);
+
+  const handleAction = async (action: string) => {
+    setLoadingAction(action);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setLoadingAction(null);
+    toast({
+      title: action,
+      description: `${action} action completed`,
+    });
+  };
   const stats = [
     {
       title: "Active Orders",
@@ -109,8 +123,13 @@ export default function SupplierDashboard() {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="w-full mt-4">
-              View All Orders
+            <Button
+              variant="outline"
+              className="w-full mt-4"
+              onClick={() => handleAction("View All Orders")}
+              disabled={loadingAction === "View All Orders"}
+            >
+              {loadingAction === "View All Orders" ? "Loading..." : "View All Orders"}
             </Button>
           </CardContent>
         </Card>
@@ -121,21 +140,41 @@ export default function SupplierDashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button className="w-full justify-start" variant="outline">
+            <Button
+              className="w-full justify-start"
+              variant="outline"
+              onClick={() => handleAction("Create New Order")}
+              disabled={loadingAction === "Create New Order"}
+            >
               <Package className="h-4 w-4 mr-2" />
-              Create New Order
+              {loadingAction === "Create New Order" ? "Loading..." : "Create New Order"}
             </Button>
-            <Button className="w-full justify-start" variant="outline">
+            <Button
+              className="w-full justify-start"
+              variant="outline"
+              onClick={() => handleAction("Manage Clients")}
+              disabled={loadingAction === "Manage Clients"}
+            >
               <Users className="h-4 w-4 mr-2" />
-              Manage Clients
+              {loadingAction === "Manage Clients" ? "Loading..." : "Manage Clients"}
             </Button>
-            <Button className="w-full justify-start" variant="outline">
+            <Button
+              className="w-full justify-start"
+              variant="outline"
+              onClick={() => handleAction("View Analytics")}
+              disabled={loadingAction === "View Analytics"}
+            >
               <TrendingUp className="h-4 w-4 mr-2" />
-              View Analytics
+              {loadingAction === "View Analytics" ? "Loading..." : "View Analytics"}
             </Button>
-            <Button className="w-full justify-start" variant="outline">
+            <Button
+              className="w-full justify-start"
+              variant="outline"
+              onClick={() => handleAction("Update Inventory")}
+              disabled={loadingAction === "Update Inventory"}
+            >
               <CheckCircle2 className="h-4 w-4 mr-2" />
-              Update Inventory
+              {loadingAction === "Update Inventory" ? "Loading..." : "Update Inventory"}
             </Button>
           </CardContent>
         </Card>

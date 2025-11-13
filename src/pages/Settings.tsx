@@ -6,8 +6,44 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockUser } from "@/lib/mock-data";
 import { Building2, Bell, ShoppingCart, Package, Users } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
+  const { toast } = useToast();
+  const [loadingSave, setLoadingSave] = useState<string | null>(null);
+  const [loadingInvite, setLoadingInvite] = useState(false);
+  const [editingTeam, setEditingTeam] = useState<number | null>(null);
+
+  const handleSave = async (section: string) => {
+    setLoadingSave(section);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setLoadingSave(null);
+    toast({
+      title: "Settings Saved",
+      description: `${section} settings have been updated`,
+    });
+  };
+
+  const handleInvite = async () => {
+    setLoadingInvite(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setLoadingInvite(false);
+    toast({
+      title: "Invitation Sent",
+      description: "Team member invitation has been sent",
+    });
+  };
+
+  const handleEditTeam = async (index: number) => {
+    setEditingTeam(index);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setEditingTeam(null);
+    toast({
+      title: "Edit Mode",
+      description: "Team member editing opened",
+    });
+  };
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -59,7 +95,9 @@ const Settings = () => {
                   <Input id="covers" type="number" defaultValue="150" />
                 </div>
               </div>
-              <Button>Save Changes</Button>
+              <Button onClick={() => handleSave("Restaurant")} disabled={loadingSave === "Restaurant"}>
+                {loadingSave === "Restaurant" ? "Saving..." : "Save Changes"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -109,7 +147,9 @@ const Settings = () => {
                 </div>
                 <Switch defaultChecked />
               </div>
-              <Button>Save Preferences</Button>
+              <Button onClick={() => handleSave("Notifications")} disabled={loadingSave === "Notifications"}>
+                {loadingSave === "Notifications" ? "Saving..." : "Save Preferences"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -139,7 +179,9 @@ const Settings = () => {
                 </div>
                 <Switch />
               </div>
-              <Button>Save Preferences</Button>
+              <Button onClick={() => handleSave("Notifications")} disabled={loadingSave === "Notifications"}>
+                {loadingSave === "Notifications" ? "Saving..." : "Save Preferences"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -172,7 +214,9 @@ const Settings = () => {
                 </div>
                 <Switch defaultChecked />
               </div>
-              <Button>Save Settings</Button>
+              <Button onClick={() => handleSave("Inventory")} disabled={loadingSave === "Inventory"}>
+                {loadingSave === "Inventory" ? "Saving..." : "Save Settings"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -188,7 +232,9 @@ const Settings = () => {
                   </CardTitle>
                   <CardDescription>Invite and manage team members</CardDescription>
                 </div>
-                <Button>Invite Team Member</Button>
+                <Button onClick={handleInvite} disabled={loadingInvite}>
+                  {loadingInvite ? "Sending..." : "Invite Team Member"}
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -200,7 +246,9 @@ const Settings = () => {
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-sm font-medium">{mockUser.role}</span>
-                    <Button variant="ghost" size="sm">Edit</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleEditTeam(0)} disabled={editingTeam === 0}>
+                      {editingTeam === 0 ? "..." : "Edit"}
+                    </Button>
                   </div>
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg border">
@@ -210,7 +258,9 @@ const Settings = () => {
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-sm font-medium">Kitchen Staff</span>
-                    <Button variant="ghost" size="sm">Edit</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleEditTeam(1)} disabled={editingTeam === 1}>
+                      {editingTeam === 1 ? "..." : "Edit"}
+                    </Button>
                   </div>
                 </div>
               </div>

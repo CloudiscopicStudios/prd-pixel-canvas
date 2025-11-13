@@ -1,9 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { ChefHat } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export const LandingNav = () => {
   const navigate = useNavigate();
+  const [loadingSignIn, setLoadingSignIn] = useState(false);
+  const [loadingGetStarted, setLoadingGetStarted] = useState(false);
+
+  const handleSignIn = async () => {
+    setLoadingSignIn(true);
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 800));
+    navigate('/signin');
+  };
+
+  const handleGetStarted = async () => {
+    setLoadingGetStarted(true);
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 800));
+    navigate('/signup/restaurant');
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border/40">
@@ -29,18 +46,20 @@ export const LandingNav = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/signin')}
+            <Button
+              variant="ghost"
+              onClick={handleSignIn}
+              disabled={loadingSignIn}
               className="rounded-full"
             >
-              Sign in
+              {loadingSignIn ? "Loading..." : "Sign in"}
             </Button>
-            <Button 
-              onClick={() => navigate('/signup/restaurant')}
+            <Button
+              onClick={handleGetStarted}
+              disabled={loadingGetStarted}
               className="rounded-full bg-foreground text-background hover:bg-foreground/90"
             >
-              Get started
+              {loadingGetStarted ? "Loading..." : "Get started"}
             </Button>
           </div>
         </div>

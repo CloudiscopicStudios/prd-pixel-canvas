@@ -2,6 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { mockWasteData } from "@/lib/mock-data";
 import { Plus, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -13,6 +15,18 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 
 const Waste = () => {
+  const { toast } = useToast();
+  const [loadingLogWaste, setLoadingLogWaste] = useState(false);
+
+  const handleLogWaste = async () => {
+    setLoadingLogWaste(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setLoadingLogWaste(false);
+    toast({
+      title: "Waste Logged",
+      description: "Waste entry has been recorded",
+    });
+  };
   const totalWasteCost = mockWasteData.reduce((sum, item) => sum + item.cost, 0);
   const totalWasteAmount = mockWasteData.reduce((sum, item) => sum + item.amount, 0);
 
@@ -36,9 +50,9 @@ const Waste = () => {
           <h1 className="text-3xl font-bold tracking-tight">Waste Tracking</h1>
           <p className="text-muted-foreground">Monitor and reduce food waste across your operations</p>
         </div>
-        <Button>
+        <Button onClick={handleLogWaste} disabled={loadingLogWaste}>
           <Plus className="mr-2 h-4 w-4" />
-          Log Waste
+          {loadingLogWaste ? "Logging..." : "Log Waste"}
         </Button>
       </div>
 

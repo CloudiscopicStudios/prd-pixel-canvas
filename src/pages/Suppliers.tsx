@@ -3,8 +3,55 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockSuppliers } from "@/lib/mock-data";
 import { Star, Mail, Phone, Plus, Eye, Edit } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Suppliers = () => {
+  const { toast } = useToast();
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [editingSupplier, setEditingSupplier] = useState<string | null>(null);
+  const [viewingSupplier, setViewingSupplier] = useState<string | null>(null);
+  const [orderingSupplier, setOrderingSupplier] = useState<string | null>(null);
+
+  const handleAddSupplier = async () => {
+    setLoadingAdd(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setLoadingAdd(false);
+    toast({
+      title: "Supplier Added",
+      description: "New supplier has been added successfully",
+    });
+  };
+
+  const handleEditSupplier = async (supplierId: string, name: string) => {
+    setEditingSupplier(supplierId);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setEditingSupplier(null);
+    toast({
+      title: "Edit Mode",
+      description: `Editing ${name}`,
+    });
+  };
+
+  const handleViewDetails = async (supplierId: string, name: string) => {
+    setViewingSupplier(supplierId);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    setViewingSupplier(null);
+    toast({
+      title: "Details Loaded",
+      description: `Viewing details for ${name}`,
+    });
+  };
+
+  const handleNewOrder = async (supplierId: string, name: string) => {
+    setOrderingSupplier(supplierId);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setOrderingSupplier(null);
+    toast({
+      title: "New Order Created",
+      description: `Order created for ${name}`,
+    });
+  };
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -13,9 +60,9 @@ const Suppliers = () => {
           <h1 className="text-3xl font-bold tracking-tight">Suppliers</h1>
           <p className="text-muted-foreground">Manage your supplier relationships and performance</p>
         </div>
-        <Button>
+        <Button onClick={handleAddSupplier} disabled={loadingAdd}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Supplier
+          {loadingAdd ? "Adding..." : "Add Supplier"}
         </Button>
       </div>
 
@@ -42,7 +89,12 @@ const Suppliers = () => {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleEditSupplier(supplier.id, supplier.name)}
+                    disabled={editingSupplier === supplier.id}
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
                 </div>
@@ -84,12 +136,22 @@ const Suppliers = () => {
               )}
 
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" className="flex-1">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => handleViewDetails(supplier.id, supplier.name)}
+                  disabled={viewingSupplier === supplier.id}
+                >
                   <Eye className="mr-2 h-4 w-4" />
-                  View Details
+                  {viewingSupplier === supplier.id ? "Loading..." : "View Details"}
                 </Button>
-                <Button variant="default" className="flex-1">
-                  New Order
+                <Button
+                  variant="default"
+                  className="flex-1"
+                  onClick={() => handleNewOrder(supplier.id, supplier.name)}
+                  disabled={orderingSupplier === supplier.id}
+                >
+                  {orderingSupplier === supplier.id ? "Creating..." : "New Order"}
                 </Button>
               </div>
             </CardContent>
