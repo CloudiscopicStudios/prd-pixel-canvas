@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockOrders } from "@/lib/mock-data";
 import { ArrowLeft, Check, X, Download, Edit } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -17,7 +19,54 @@ import {
 const OrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+  const { toast } = useToast();
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [loadingReject, setLoadingReject] = useState(false);
+  const [loadingApprove, setLoadingApprove] = useState(false);
+  const [loadingDownload, setLoadingDownload] = useState(false);
+
+  const handleEditOrder = async () => {
+    setLoadingEdit(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setLoadingEdit(false);
+    toast({
+      title: "Edit Mode",
+      description: "Order editing interface loaded",
+    });
+  };
+
+  const handleRejectOrder = async () => {
+    setLoadingReject(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setLoadingReject(false);
+    toast({
+      title: "Order Rejected",
+      description: `Order #${id} has been rejected`,
+    });
+    navigate('/orders');
+  };
+
+  const handleApproveOrder = async () => {
+    setLoadingApprove(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setLoadingApprove(false);
+    toast({
+      title: "Order Approved",
+      description: `Order #${id} has been approved and sent to supplier`,
+    });
+    navigate('/orders');
+  };
+
+  const handleDownloadPdf = async () => {
+    setLoadingDownload(true);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setLoadingDownload(false);
+    toast({
+      title: "PDF Downloaded",
+      description: `Invoice for order #${id} has been downloaded`,
+    });
+  };
+
   const order = mockOrders.find(o => o.id === id);
 
   if (!order) {
@@ -65,24 +114,24 @@ const OrderDetail = () => {
         </div>
         {order.status === "Pending Approval" && (
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleEditOrder} disabled={loadingEdit}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit Order
+              {loadingEdit ? "Loading..." : "Edit Order"}
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleRejectOrder} disabled={loadingReject}>
               <X className="mr-2 h-4 w-4" />
-              Reject
+              {loadingReject ? "Rejecting..." : "Reject"}
             </Button>
-            <Button>
+            <Button onClick={handleApproveOrder} disabled={loadingApprove}>
               <Check className="mr-2 h-4 w-4" />
-              Approve & Send
+              {loadingApprove ? "Approving..." : "Approve & Send"}
             </Button>
           </div>
         )}
         {order.status === "Delivered" && (
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleDownloadPdf} disabled={loadingDownload}>
             <Download className="mr-2 h-4 w-4" />
-            Download PDF
+            {loadingDownload ? "Downloading..." : "Download PDF"}
           </Button>
         )}
       </div>

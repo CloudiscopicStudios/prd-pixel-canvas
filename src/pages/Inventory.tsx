@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockInventoryItems } from "@/lib/mock-data";
 import { AlertCircle, CheckCircle, Package, Camera } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -13,6 +15,30 @@ import {
 } from "@/components/ui/table";
 
 const Inventory = () => {
+  const { toast } = useToast();
+  const [loadingLogCount, setLoadingLogCount] = useState(false);
+  const [loadingAdjust, setLoadingAdjust] = useState(false);
+
+  const handleLogCount = async () => {
+    setLoadingLogCount(true);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setLoadingLogCount(false);
+    toast({
+      title: "Count Logged",
+      description: "Inventory count has been recorded",
+    });
+  };
+
+  const handleAdjustLevels = async () => {
+    setLoadingAdjust(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setLoadingAdjust(false);
+    toast({
+      title: "Levels Adjusted",
+      description: "Inventory levels have been updated",
+    });
+  };
+
   const lowStockCount = mockInventoryItems.filter(item => item.status === "low").length;
   const totalValue = 12847.32;
 
@@ -25,13 +51,13 @@ const Inventory = () => {
           <p className="text-muted-foreground">Monitor stock levels and conduct counts</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleLogCount} disabled={loadingLogCount}>
             <Camera className="mr-2 h-4 w-4" />
-            Log Count
+            {loadingLogCount ? "Logging..." : "Log Count"}
           </Button>
-          <Button>
+          <Button onClick={handleAdjustLevels} disabled={loadingAdjust}>
             <Package className="mr-2 h-4 w-4" />
-            Adjust Levels
+            {loadingAdjust ? "Adjusting..." : "Adjust Levels"}
           </Button>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, TrendingUp, DollarSign, AlertCircle, Package } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const reportTemplates = [
   {
@@ -34,6 +36,62 @@ const reportTemplates = [
 ];
 
 const Reports = () => {
+  const { toast } = useToast();
+  const [loadingCustom, setLoadingCustom] = useState(false);
+  const [generatingReport, setGeneratingReport] = useState<string | null>(null);
+  const [downloadingReport, setDownloadingReport] = useState<string | null>(null);
+  const [loadingSchedule, setLoadingSchedule] = useState(false);
+  const [editingSchedule, setEditingSchedule] = useState<number | null>(null);
+
+  const handleCustomReport = async () => {
+    setLoadingCustom(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setLoadingCustom(false);
+    toast({
+      title: "Custom Report",
+      description: "Custom report builder opened",
+    });
+  };
+
+  const handleGenerateReport = async (reportId: string, title: string) => {
+    setGeneratingReport(reportId);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    setGeneratingReport(null);
+    toast({
+      title: "Report Generated",
+      description: `${title} has been generated successfully`,
+    });
+  };
+
+  const handleDownloadReport = async (reportId: string, title: string) => {
+    setDownloadingReport(reportId);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setDownloadingReport(null);
+    toast({
+      title: "Report Downloaded",
+      description: `${title} has been downloaded`,
+    });
+  };
+
+  const handleManageSchedule = async () => {
+    setLoadingSchedule(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setLoadingSchedule(false);
+    toast({
+      title: "Schedule Manager",
+      description: "Report schedule manager opened",
+    });
+  };
+
+  const handleEditSchedule = async (index: number) => {
+    setEditingSchedule(index);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setEditingSchedule(null);
+    toast({
+      title: "Schedule Edited",
+      description: "Report schedule updated",
+    });
+  };
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -42,9 +100,9 @@ const Reports = () => {
           <h1 className="text-3xl font-bold tracking-tight">Reports & Analytics</h1>
           <p className="text-muted-foreground">Generate comprehensive reports for strategic insights</p>
         </div>
-        <Button>
+        <Button onClick={handleCustomReport} disabled={loadingCustom}>
           <FileText className="mr-2 h-4 w-4" />
-          Custom Report
+          {loadingCustom ? "Loading..." : "Custom Report"}
         </Button>
       </div>
 
@@ -67,10 +125,20 @@ const Reports = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2">
-                  <Button variant="default" className="flex-1">
-                    Generate Report
+                  <Button
+                    variant="default"
+                    className="flex-1"
+                    onClick={() => handleGenerateReport(template.id, template.title)}
+                    disabled={generatingReport === template.id}
+                  >
+                    {generatingReport === template.id ? "Generating..." : "Generate Report"}
                   </Button>
-                  <Button variant="outline" size="icon">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleDownloadReport(template.id, template.title)}
+                    disabled={downloadingReport === template.id}
+                  >
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>
@@ -120,7 +188,9 @@ const Reports = () => {
               <CardTitle>Scheduled Reports</CardTitle>
               <CardDescription>Automatically generated and emailed reports</CardDescription>
             </div>
-            <Button variant="outline">Manage Schedule</Button>
+            <Button variant="outline" onClick={handleManageSchedule} disabled={loadingSchedule}>
+              {loadingSchedule ? "Loading..." : "Manage Schedule"}
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -130,14 +200,28 @@ const Reports = () => {
                 <p className="font-medium">Weekly Food Cost Summary</p>
                 <p className="text-sm text-muted-foreground">Every Monday at 9:00 AM</p>
               </div>
-              <Button variant="ghost" size="sm">Edit</Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEditSchedule(0)}
+                disabled={editingSchedule === 0}
+              >
+                {editingSchedule === 0 ? "..." : "Edit"}
+              </Button>
             </div>
             <div className="flex items-center justify-between p-4 rounded-lg border">
               <div>
                 <p className="font-medium">Monthly Waste Analysis</p>
                 <p className="text-sm text-muted-foreground">First day of each month at 8:00 AM</p>
               </div>
-              <Button variant="ghost" size="sm">Edit</Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEditSchedule(1)}
+                disabled={editingSchedule === 1}
+              >
+                {editingSchedule === 1 ? "..." : "Edit"}
+              </Button>
             </div>
           </div>
         </CardContent>

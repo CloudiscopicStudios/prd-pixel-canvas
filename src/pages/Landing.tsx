@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { 
-  Sparkles, 
-  TrendingUp, 
-  Shield, 
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Sparkles,
+  TrendingUp,
+  Shield,
   Zap,
   ChefHat,
   BarChart3,
@@ -16,6 +18,55 @@ import {
 
 const Landing = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loadingStarted, setLoadingStarted] = useState(false);
+  const [loadingDemo, setLoadingDemo] = useState(false);
+  const [loadingTrial, setLoadingTrial] = useState(false);
+  const [loadingSales, setLoadingSales] = useState(false);
+
+  const handleGetStarted = async () => {
+    setLoadingStarted(true);
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    toast({
+      title: "Welcome!",
+      description: "Redirecting to your dashboard...",
+    });
+    navigate('/dashboard');
+  };
+
+  const handleViewDemo = async () => {
+    setLoadingDemo(true);
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    toast({
+      title: "Loading Demo",
+      description: "Preparing demo environment...",
+    });
+    navigate('/dashboard');
+  };
+
+  const handleStartTrial = async () => {
+    setLoadingTrial(true);
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    toast({
+      title: "Starting Trial",
+      description: "Setting up your free trial...",
+    });
+    navigate('/dashboard');
+  };
+
+  const handleContactSales = async () => {
+    setLoadingSales(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setLoadingSales(false);
+    toast({
+      title: "Contact Request Sent",
+      description: "Our sales team will reach out to you within 24 hours.",
+    });
+  };
 
   const features = [
     {
@@ -74,20 +125,22 @@ const Landing = () => {
             </p>
             
             <div className="flex items-center justify-center gap-4 pt-4">
-              <Button 
+              <Button
                 size="lg"
-                onClick={() => navigate('/dashboard')}
+                onClick={handleGetStarted}
+                disabled={loadingStarted}
                 className="rounded-full h-12 px-8 bg-foreground text-background hover:bg-foreground/90 shadow-lg"
               >
-                Get started free
+                {loadingStarted ? "Loading..." : "Get started free"}
               </Button>
-              <Button 
+              <Button
                 size="lg"
                 variant="outline"
-                onClick={() => navigate('/dashboard')}
+                onClick={handleViewDemo}
+                disabled={loadingDemo}
                 className="rounded-full h-12 px-8"
               >
-                View demo
+                {loadingDemo ? "Loading..." : "View demo"}
               </Button>
             </div>
           </div>
@@ -235,19 +288,22 @@ const Landing = () => {
               Join hundreds of restaurants already using PantryPilot
             </p>
             <div className="flex items-center justify-center gap-4">
-              <Button 
+              <Button
                 size="lg"
-                onClick={() => navigate('/dashboard')}
+                onClick={handleStartTrial}
+                disabled={loadingTrial}
                 className="rounded-full h-12 px-8 bg-white text-primary hover:bg-white/90"
               >
-                Start free trial
+                {loadingTrial ? "Loading..." : "Start free trial"}
               </Button>
-              <Button 
+              <Button
                 size="lg"
                 variant="outline"
+                onClick={handleContactSales}
+                disabled={loadingSales}
                 className="rounded-full h-12 px-8 border-white text-white hover:bg-white/10"
               >
-                Contact sales
+                {loadingSales ? "Sending..." : "Contact sales"}
               </Button>
             </div>
           </Card>

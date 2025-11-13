@@ -6,10 +6,67 @@ import { Input } from "@/components/ui/input";
 import { mockOrders } from "@/lib/mock-data";
 import { Search, Eye, Check, X, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Orders = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+  const [loadingCreateOrder, setLoadingCreateOrder] = useState(false);
+  const [loadingFilter, setLoadingFilter] = useState(false);
+  const [approvingOrder, setApprovingOrder] = useState<string | null>(null);
+  const [rejectingOrder, setRejectingOrder] = useState<string | null>(null);
+  const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null);
+
+  const handleCreateManualOrder = async () => {
+    setLoadingCreateOrder(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setLoadingCreateOrder(false);
+    toast({
+      title: "Order Created",
+      description: "Manual order has been created successfully",
+    });
+  };
+
+  const handleFilter = async () => {
+    setLoadingFilter(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    setLoadingFilter(false);
+    toast({
+      title: "Filters Applied",
+      description: "Orders have been filtered",
+    });
+  };
+
+  const handleApprove = async (orderId: string) => {
+    setApprovingOrder(orderId);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setApprovingOrder(null);
+    toast({
+      title: "Order Approved",
+      description: `Order #${orderId} has been approved`,
+    });
+  };
+
+  const handleReject = async (orderId: string) => {
+    setRejectingOrder(orderId);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setRejectingOrder(null);
+    toast({
+      title: "Order Rejected",
+      description: `Order #${orderId} has been rejected`,
+    });
+  };
+
+  const handleDownloadPdf = async (orderId: string) => {
+    setDownloadingPdf(orderId);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setDownloadingPdf(null);
+    toast({
+      title: "PDF Downloaded",
+      description: `Invoice for order #${orderId} has been downloaded`,
+    });
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -37,7 +94,9 @@ const Orders = () => {
           <h1 className="text-3xl font-bold tracking-tight">Orders</h1>
           <p className="text-muted-foreground">Manage and track all your supplier orders</p>
         </div>
-        <Button>Create Manual Order</Button>
+        <Button onClick={handleCreateManualOrder} disabled={loadingCreateOrder}>
+          {loadingCreateOrder ? "Creating..." : "Create Manual Order"}
+        </Button>
       </div>
 
       {/* Search and Filters */}
@@ -53,7 +112,9 @@ const Orders = () => {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline">Filter</Button>
+            <Button variant="outline" onClick={handleFilter} disabled={loadingFilter}>
+              {loadingFilter ? "Loading..." : "Filter"}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -95,20 +156,35 @@ const Orders = () => {
                   </Button>
                   {order.status === "Pending Approval" && (
                     <>
-                      <Button variant="default" size="sm">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleApprove(order.id)}
+                        disabled={approvingOrder === order.id}
+                      >
                         <Check className="mr-2 h-4 w-4" />
-                        Approve
+                        {approvingOrder === order.id ? "Approving..." : "Approve"}
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleReject(order.id)}
+                        disabled={rejectingOrder === order.id}
+                      >
                         <X className="mr-2 h-4 w-4" />
-                        Reject
+                        {rejectingOrder === order.id ? "Rejecting..." : "Reject"}
                       </Button>
                     </>
                   )}
                   {order.status === "Delivered" && (
-                    <Button variant="outline" size="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDownloadPdf(order.id)}
+                      disabled={downloadingPdf === order.id}
+                    >
                       <Download className="mr-2 h-4 w-4" />
-                      Download PDF
+                      {downloadingPdf === order.id ? "Downloading..." : "Download PDF"}
                     </Button>
                   )}
                 </div>
